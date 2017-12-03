@@ -1,0 +1,9 @@
+theme: jekyll-theme-primer
+title: Alzheimer's Disease Classification
+description: Accurately diagnose Alzheimer's disease with small number of predictors
+baseurl:
+markdown: kramdown
+kramdown:
+    math_engine: mathjax
+    input: GFM
+    syntax_highlighter: rouge
