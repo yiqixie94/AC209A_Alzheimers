@@ -1,5 +1,6 @@
 ---
 title: Conclusion
+nav_include: 6
 ---
 
 ## Conclusion
