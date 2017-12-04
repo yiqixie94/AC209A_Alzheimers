@@ -80,10 +80,10 @@ print(X_train.columns[sig_b_ct])
 
 
     Most significant coefficients: 
-    Index(['ADAS13', 'MMSE', 'FAQ'], dtype='object')
+    Index(['ADAS13', 'MMSE', 'RAVLT_forgetting', 'FAQ'], dtype='object')
 
 
-Surprisingly, we only have 3 significant predictors using bootstrap method, `ADAS13` and `MMSE` (Mini-Mental State Examination) are both cognitive assessments which are likely to be free or cheap. 
+Surprisingly, we only have 4 significant predictors using bootstrap method, `ADAS13` and `MMSE` (Mini-Mental State Examination) and `RAVLT_forgetting` (Rey Auditory Verbal Learning Test) are all cognitive assessments which are likely to be free or cheap. 
 
 ### Feature importance
 
@@ -98,26 +98,27 @@ print(imp_features)
 ```
 
 
-    The most important 70 features:
+    The most important 71 features:
     ['PTGENDER' 'PTEDUCAT' 'PTRACCAT_Asian' 'PTRACCAT_Black' 'PTRACCAT_White'
-     'PTETHCAT_Not_Hisp/Latino' 'PTMARRY_Never_married' 'PTMARRY_Widowed'
-     'APOE4' 'CSF_ABETA' 'CSF_TAU' 'CSF_PTAU' 'FDG' 'FDG_slope' 'AV45'
-     'AV45_slope' 'ADAS13' 'ADAS13_slope' 'MMSE' 'MMSE_slope' 'RAVLT_immediate'
-     'RAVLT_immediate_slope' 'RAVLT_learning' 'RAVLT_learning_slope'
-     'RAVLT_forgetting' 'RAVLT_forgetting_slope' 'RAVLT_perc_forgetting'
-     'RAVLT_perc_forgetting_slope' 'MOCA' 'MOCA_slope' 'EcogPtMem'
-     'EcogPtMem_slope' 'EcogPtLang' 'EcogPtLang_slope' 'EcogPtVisspat'
-     'EcogPtVisspat_slope' 'EcogPtPlan' 'EcogPtPlan_slope' 'EcogPtOrgan'
-     'EcogPtOrgan_slope' 'EcogPtDivatt' 'EcogPtDivatt_slope' 'EcogSPMem'
-     'EcogSPMem_slope' 'EcogSPLang' 'EcogSPLang_slope' 'EcogSPVisspat'
-     'EcogSPVisspat_slope' 'EcogSPPlan' 'EcogSPPlan_slope' 'EcogSPOrgan'
-     'EcogSPOrgan_slope' 'EcogSPDivatt' 'EcogSPDivatt_slope' 'FAQ' 'FAQ_slope'
-     'Ventricles' 'Ventricles_slope' 'Hippocampus' 'Hippocampus_slope'
-     'WholeBrain' 'WholeBrain_slope' 'Entorhinal' 'Entorhinal_slope' 'Fusiform'
-     'Fusiform_slope' 'MidTemp' 'MidTemp_slope' 'ICV' 'ICV_slope']
+     'PTETHCAT_Not_Hisp/Latino' 'PTMARRY_Married' 'PTMARRY_Never_married'
+     'PTMARRY_Widowed' 'APOE4' 'CSF_ABETA' 'CSF_TAU' 'CSF_PTAU' 'FDG'
+     'FDG_slope' 'AV45' 'AV45_slope' 'ADAS13' 'ADAS13_slope' 'MMSE'
+     'MMSE_slope' 'RAVLT_immediate' 'RAVLT_immediate_slope' 'RAVLT_learning'
+     'RAVLT_learning_slope' 'RAVLT_forgetting' 'RAVLT_forgetting_slope'
+     'RAVLT_perc_forgetting' 'RAVLT_perc_forgetting_slope' 'MOCA' 'MOCA_slope'
+     'EcogPtMem' 'EcogPtMem_slope' 'EcogPtLang' 'EcogPtLang_slope'
+     'EcogPtVisspat' 'EcogPtVisspat_slope' 'EcogPtPlan' 'EcogPtPlan_slope'
+     'EcogPtOrgan' 'EcogPtOrgan_slope' 'EcogPtDivatt' 'EcogPtDivatt_slope'
+     'EcogSPMem' 'EcogSPMem_slope' 'EcogSPLang' 'EcogSPLang_slope'
+     'EcogSPVisspat' 'EcogSPVisspat_slope' 'EcogSPPlan' 'EcogSPPlan_slope'
+     'EcogSPOrgan' 'EcogSPOrgan_slope' 'EcogSPDivatt' 'EcogSPDivatt_slope'
+     'FAQ' 'FAQ_slope' 'Ventricles' 'Ventricles_slope' 'Hippocampus'
+     'Hippocampus_slope' 'WholeBrain' 'WholeBrain_slope' 'Entorhinal'
+     'Entorhinal_slope' 'Fusiform' 'Fusiform_slope' 'MidTemp' 'MidTemp_slope'
+     'ICV' 'ICV_slope']
 
 
-Using random forest classifier, we ended up with 70 important features. If the slope of certain variable is not an important feature, we can at least avoid going through the same test again and again in each visit.
+Using random forest classifier, we ended up with 71 important features. If the slope of certain variable is not an important feature, we can at least avoid going through the same test again and again in each visit.
 
 ## Forward and Backward Selection
 
@@ -207,18 +208,20 @@ print("Predictors selected by forward selection (",
       len(predictors_forward), " predictors): \n", predictors_forward)
 print("\n-----------------------------------------\n")
 print("Predictors selected by backward selection: (", 
-      len(predictors_forward), " predictors): \n", predictors_backward)
+      len(predictors_backward), " predictors): \n", predictors_backward)
 ```
 
 
-    Predictors selected by forward selection ( 29  predictors): 
-     ['APOE4', 'PTMARRY_Married', 'CSF_ABETA', 'MOCA_slope', 'EcogPtLang', 'Ventricles', 'MMSE', 'MidTemp', 'WholeBrain', 'WholeBrain_slope', 'Entorhinal_slope', 'EcogSPLang', 'FAQ', 'PTEDUCAT', 'EcogPtOrgan_slope', 'FAQ_slope', 'EcogPtMem', 'Ventricles_slope', 'EcogPtLang_slope', 'Entorhinal', 'RAVLT_forgetting_slope', 'EcogPtVisspat_slope', 'FDG', 'FDG_slope', 'CSF_PTAU', 'Fusiform_slope', 'EcogPtDivatt', 'EcogSPMem', 'PTRACCAT_Black']
+    Predictors selected by forward selection ( 28  predictors): 
+     ['MidTemp_slope', 'Fusiform', 'EcogPtVisspat', 'Ventricles_slope', 'MOCA', 'MMSE_slope', 'FDG', 'APOE4', 'MMSE', 'RAVLT_immediate', 'FAQ', 'FAQ_slope', 'ICV_slope', 'EcogPtLang', 'CSF_TAU', 'FDG_slope', 'WholeBrain_slope', 'EcogSPMem', 'ADAS13', 'EcogPtMem', 'EcogPtPlan', 'RAVLT_learning_slope', 'EcogSPDivatt', 'CSF_ABETA', 'EcogPtOrgan_slope', 'RAVLT_forgetting_slope', 'EcogPtLang_slope', 'RAVLT_perc_forgetting_slope']
     
     -----------------------------------------
     
-    Predictors selected by backward selection: ( 29  predictors): 
-     ['PTMARRY_Married', 'EcogSPMem_slope', 'PTRACCAT_Unknown', 'CSF_ABETA', 'MOCA_slope', 'EcogPtPlan', 'PTRACCAT_Asian', 'RAVLT_learning_slope', 'MMSE', 'RAVLT_immediate', 'EcogSPPlan_slope', 'PTRACCAT_White', 'MOCA', 'WholeBrain_slope', 'EcogPtDivatt_slope', 'ADAS13', 'Hippocampus', 'EcogPtMem', 'RAVLT_forgetting', 'EcogPtLang_slope', 'Entorhinal', 'RAVLT_forgetting_slope', 'EcogSPVisspat_slope', 'FDG_slope', 'Fusiform', 'Fusiform_slope', 'EcogSPMem', 'PTRACCAT_Black', 'APOE4', 'RAVLT_immediate_slope', 'PTRACCAT_More_than_one', 'Ventricles', 'EcogPtPlan_slope', 'RAVLT_perc_forgetting', 'CSF_TAU', 'EcogPtOrgan', 'RAVLT_perc_forgetting_slope', 'Entorhinal_slope', 'EcogSPLang', 'PTETHCAT_Not_Hisp/Latino', 'FAQ', 'RAVLT_learning', 'AV45', 'PTEDUCAT', 'MMSE_slope', 'EcogSPPlan', 'EcogPtOrgan_slope', 'EcogSPDivatt_slope', 'Ventricles_slope', 'EcogPtMem_slope', 'EcogPtVisspat_slope', 'EcogSPOrgan', 'PTMARRY_Widowed']
+    Predictors selected by backward selection: ( 64  predictors): 
+     ['Fusiform_slope', 'EcogPtVisspat', 'RAVLT_immediate_slope', 'RAVLT_perc_forgetting', 'FDG', 'MMSE', 'RAVLT_immediate', 'FAQ', 'PTETHCAT_Not_Hisp/Latino', 'WholeBrain', 'CSF_TAU', 'FDG_slope', 'EcogSPVisspat_slope', 'WholeBrain_slope', 'ICV', 'Entorhinal_slope', 'PTMARRY_Married', 'EcogSPOrgan', 'CSF_PTAU', 'EcogPtOrgan', 'PTRACCAT_More_than_one', 'RAVLT_learning_slope', 'EcogSPDivatt', 'EcogSPVisspat', 'CSF_ABETA', 'RAVLT_forgetting_slope', 'PTRACCAT_Unknown', 'PTRACCAT_Black', 'EcogPtDivatt', 'RAVLT_perc_forgetting_slope', 'PTEDUCAT', 'PTMARRY_Never_married', 'EcogSPPlan_slope', 'MidTemp_slope', 'AV45_slope', 'EcogSPPlan', 'Ventricles_slope', 'MidTemp', 'MMSE_slope', 'APOE4', 'EcogPtDivatt_slope', 'EcogSPLang_slope', 'FAQ_slope', 'Hippocampus_slope', 'EcogPtLang', 'Hippocampus', 'ICV_slope', 'EcogSPMem', 'ADAS13', 'RAVLT_learning', 'Ventricles', 'EcogPtMem', 'PTRACCAT_White', 'RAVLT_forgetting', 'MOCA_slope', 'EcogPtPlan', 'Entorhinal', 'PTMARRY_Widowed', 'PTRACCAT_Hawaiian/Other_PI', 'AV45', 'EcogPtOrgan_slope', 'EcogPtLang_slope', 'ADAS13_slope', 'PTGENDER']
 
+
+Backward selection chose far more predictors than forward selection.
 
 We can see that genetic analysis such as `APOE4`, CSF biosamples, neuropsychological tests and MRI are the most important varibles in predicting AD. However, only a few variables we get from each of tests are useful, so we do not need to focus on all the testing results. 
 
