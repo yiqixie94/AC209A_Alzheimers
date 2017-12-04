@@ -538,8 +538,12 @@ score_df
 
 
 
-We found that Random Forest Classifier, LDA and logistic regression with l1 regularization performed have the highest accuracy on the test set.
+Based on the above summary, AdaBoost has a very high train accuracy which is close to 1(0.971014). Random Forest Classifier ranks second on the train accuracy(0.930757) and it also has the highest accuracy(0.820988) on the test set. LDA has the second highest accuracy(0.796296) and logistic regression with l1 regularization is the third highest(0.783951).
 
-Since we focus on the diagnosis of Alzheimer's disease, we are concerned about the test accuracy on `AD` patients. Random forest, decision tree, LDA, logistic regression with l1 regularization and multinomial logistic regression all reached test accuracy of over 0.85 on the classification of `AD`.
+For classifying `CN` patients, both QDA and weighted logistic regression have the highest test accuracy(0.833333), so they performed the best for determining Cognitive Normal patients. However, logistic regression with l2 regularization and unweighted logistic regression have zero accuracy on classifying `CN` patients. Since both of them have very high accuracy on `CI` but low accuracy on `AD`, we think these two models probably classified all the `CN` patients into `AD` which leads to zero accuracy on `CN` and low accuracy on `AD`.
 
-Overall, Random Forest has the best performance. 
+KNN has the highest test accuracy(0.989247) on diagnosing `CI` patients. Logistic regression with l2 regularization, OvR logistic regression and random forest all reached 0.9 accuracy on diagnosing `CI` patients.
+
+Since we focus on the diagnosis of Alzheimer's disease, we are more concerned about the test accuracy on `AD` patients. Both Decision Tree and LDA have the highest test accuracy(0.888889) on `AD` patients. Logistic regression with l1 regularization and multinomial logistic regression both reached test accuracy of over 0.85 on the classification of `AD`.
+
+To conclude, Decision Tree and LDA performed the best if we only concern about diagnosing `AD` patients. However, Random Forest has the best performance overall. 
