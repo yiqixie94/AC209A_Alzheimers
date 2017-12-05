@@ -2,6 +2,7 @@
 title: Project Statement
 ---
 
+
 # Goal of the Project
 
 Alzheimer’s Disease is a common form of dementia that usually starts slowly and worsens over time. In the
@@ -25,7 +26,7 @@ patients, particularly focusing on the problem discussed above. We will first in
 including finding the major causes of Alzheimer’s and evaluating the risk based on predictors. Then our main
 goal is to perform several advanced analysis on the dataset trying to answer the questions we raised above.
 
-## Major Contents
+# Major Contents
 - Data Overview
 - EDA and Data Preprocessing
 - Classification Models and Their Performance
