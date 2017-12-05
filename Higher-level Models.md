@@ -1,7 +1,7 @@
 ---
 title: Higher-level Models
 notebook: Higher-level Models.ipynb
-nav_include: 5
+nav_include: 6
 ---
 
 ## Contents
@@ -296,7 +296,7 @@ nn_score = score(mlp, X_train_std, y_train, X_test_std, y_test)
 
 ```python
 # random forest to compare with
-rf_best = RandomForestClassifier(n_estimators=32, max_depth=6, random_state=9001)
+rf_best = RandomForestClassifier(n_estimators=32, max_depth=10, random_state=9001)
 rf_best.fit(X_train, y_train)
 rf_score = score(rf_best, X_train, y_train, X_test, y_test)
 ```
@@ -340,27 +340,27 @@ score_df
     <tr>
       <th>Train accuracy</th>
       <td>0.826087</td>
-      <td>0.921095</td>
+      <td>0.851852</td>
     </tr>
     <tr>
       <th>Test accuracy</th>
       <td>0.783951</td>
-      <td>0.783951</td>
+      <td>0.771605</td>
     </tr>
     <tr>
       <th>Test accuracy CN</th>
       <td>0.571429</td>
-      <td>0.500000</td>
+      <td>0.404762</td>
     </tr>
     <tr>
       <th>Test accuracy CI</th>
       <td>0.849462</td>
-      <td>0.892473</td>
+      <td>0.924731</td>
     </tr>
     <tr>
       <th>Test accuracy AD</th>
       <td>0.888889</td>
-      <td>0.851852</td>
+      <td>0.814815</td>
     </tr>
   </tbody>
 </table>

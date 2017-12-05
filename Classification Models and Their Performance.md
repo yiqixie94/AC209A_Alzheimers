@@ -1,14 +1,13 @@
 ---
 title: Classification Models and Their Performance
 notebook: Classification Models and Their Performance.ipynb
-nav_include: 3
+nav_include: 4
 ---
 
 ## Contents
 {:.no_toc}
 *  
 {: toc}
-
 
 
 ```python
@@ -54,6 +53,7 @@ y_test = df_test['DX_bl'].copy()
 
 
 ```python
+# function to help compare the accuracy of models
 def score(model, X_train, y_train, X_test, y_test):
     train_acc = model.score(X_train,y_train)
     test_acc = model.score(X_test,y_test)
@@ -168,6 +168,7 @@ print('Multinomial Logistic Regression test Score: ',log_multinomial.score(X_tes
 
 
 ```python
+# store the accuracy score
 l1_score = score(log_l1, X_train, y_train, X_test, y_test)
 l2_score = score(log_l2, X_train, y_train, X_test, y_test)
 weighted_score = score(weighted_logistic, X_train, y_train, X_test, y_test)
@@ -179,38 +180,204 @@ multi_score = score(log_multinomial, X_train, y_train, X_test, y_test)
 
 ## Discriminant Analysis
 
-We performed normalization on continuous predictors and used Linear Discriminant Analysis (LDA) and Quadratic Discriminant Analysis (QDA) as our models. 
+We performed normalization on continuous predictors and used Linear Discriminant Analysis (LDA) and Quadratic Discriminant Analysis (QDA) as our models. LDA performs really well.
 
 
 
 ```python
-cols_continuous = ['APOE4', 'CSF_ABETA', 'CSF_TAU',  'CSF_PTAU', 
-                   'FDG', 'FDG_slope', 'AV45', 'AV45_slope',
-                   'ADAS13', 'ADAS13_slope', 'MMSE', 'MMSE_slope',
-                   'RAVLT_immediate', 'RAVLT_immediate_slope', 'RAVLT_learning',
-                   'RAVLT_learning_slope', 'RAVLT_forgetting', 'RAVLT_forgetting_slope',
-                   'RAVLT_perc_forgetting', 'RAVLT_perc_forgetting_slope', 'MOCA',
-                   'MOCA_slope', 'EcogPtMem', 'EcogPtMem_slope', 'EcogPtLang',
-                   'EcogPtLang_slope', 'EcogPtVisspat', 'EcogPtVisspat_slope',
-                   'EcogPtPlan', 'EcogPtPlan_slope', 'EcogPtOrgan', 'EcogPtOrgan_slope',
-                   'EcogPtDivatt', 'EcogPtDivatt_slope', 'EcogSPMem', 'EcogSPMem_slope',
-                   'EcogSPLang', 'EcogSPLang_slope', 'EcogSPVisspat',
-                   'EcogSPVisspat_slope', 'EcogSPPlan', 'EcogSPPlan_slope', 'EcogSPOrgan',
-                   'EcogSPOrgan_slope', 'EcogSPDivatt', 'EcogSPDivatt_slope', 'FAQ',
-                   'FAQ_slope', 'Ventricles', 'Ventricles_slope', 'Hippocampus',
-                   'Hippocampus_slope', 'WholeBrain', 'WholeBrain_slope', 'Entorhinal',
-                   'Entorhinal_slope', 'Fusiform', 'Fusiform_slope', 'MidTemp',
-                   'MidTemp_slope', 'ICV', 'ICV_slope']
+# normalization
+cols_standardize = [
+    c for c in X_train.columns 
+    if (not c.startswith('PT')) or (c=='PTEDUCAT')]
 
 X_train_std = X_train.copy()
 X_test_std = X_test.copy()
-for i in cols_continuous:
-    col_mean = np.mean(X_train_std[i])
-    col_sd = np.std(X_train_std[i])
-    if col_sd < 1e-10*col_mean:
-        X_train_std.loc[i] = (X_train_std[i]-col_mean)/col_sd
-        X_test_std.loc[i] = (X_test_std[i]-col_mean)/col_sd
+for c in cols_standardize:
+    col_mean = np.mean(X_train[c])
+    col_sd = np.std(X_train[c])
+    if col_sd > (1e-10)*col_mean:
+        X_train_std[c] = (X_train[c]-col_mean)/col_sd
+        X_test_std[c] = (X_test[c]-col_mean)/col_sd
 ```
+
+
+
+
+```python
+X_train_std.head()
+```
+
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PTGENDER</th>
+      <th>PTEDUCAT</th>
+      <th>PTRACCAT_Asian</th>
+      <th>PTRACCAT_Black</th>
+      <th>PTRACCAT_Hawaiian/Other_PI</th>
+      <th>PTRACCAT_More_than_one</th>
+      <th>PTRACCAT_Unknown</th>
+      <th>PTRACCAT_White</th>
+      <th>PTETHCAT_Not_Hisp/Latino</th>
+      <th>PTMARRY_Married</th>
+      <th>...</th>
+      <th>WholeBrain</th>
+      <th>WholeBrain_slope</th>
+      <th>Entorhinal</th>
+      <th>Entorhinal_slope</th>
+      <th>Fusiform</th>
+      <th>Fusiform_slope</th>
+      <th>MidTemp</th>
+      <th>MidTemp_slope</th>
+      <th>ICV</th>
+      <th>ICV_slope</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0</td>
+      <td>-2.852257</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-1.761500</td>
+      <td>-0.567555</td>
+      <td>-0.820814</td>
+      <td>-1.269796</td>
+      <td>-1.426968</td>
+      <td>0.156847</td>
+      <td>-2.102069</td>
+      <td>-0.192827</td>
+      <td>-1.574482</td>
+      <td>0.093937</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>1</td>
+      <td>1.376909</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>-0.134464</td>
+      <td>-0.028641</td>
+      <td>-0.070387</td>
+      <td>0.188014</td>
+      <td>0.721399</td>
+      <td>-0.067438</td>
+      <td>0.019784</td>
+      <td>0.506511</td>
+      <td>-0.489132</td>
+      <td>-0.265646</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0</td>
+      <td>0.607970</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>...</td>
+      <td>-1.300396</td>
+      <td>0.310720</td>
+      <td>0.456478</td>
+      <td>-0.560840</td>
+      <td>0.292776</td>
+      <td>0.016824</td>
+      <td>-0.650452</td>
+      <td>0.224140</td>
+      <td>-1.239633</td>
+      <td>-0.014198</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0</td>
+      <td>-0.160970</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-0.000094</td>
+      <td>-0.003749</td>
+      <td>0.006635</td>
+      <td>-0.003683</td>
+      <td>0.010325</td>
+      <td>0.015345</td>
+      <td>0.018697</td>
+      <td>0.004091</td>
+      <td>-0.005136</td>
+      <td>0.004314</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>1</td>
+      <td>-0.160970</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>...</td>
+      <td>-0.000094</td>
+      <td>-0.003749</td>
+      <td>0.006635</td>
+      <td>-0.003683</td>
+      <td>0.010325</td>
+      <td>0.015345</td>
+      <td>0.018697</td>
+      <td>0.004091</td>
+      <td>1.652198</td>
+      <td>-0.047345</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 74 columns</p>
+</div>
+
 
 
 
@@ -222,6 +389,7 @@ qda = QuadraticDiscriminantAnalysis()
 lda.fit(X_train_std,y_train)
 qda.fit(X_train_std,y_train)
 
+# training accuracy
 print("Training accuracy")
 print("------------------")
 print('LDA Train Score: ',lda.score(X_train_std,y_train))
@@ -229,6 +397,7 @@ print('QDA Train Score: ',qda.score(X_train_std,y_train))
 
 print('\n')
 
+# test accuracy
 print("Test accuracy")
 print("------------------")
 print('LDA Test Score: ',lda.score(X_test_std,y_test))
@@ -239,18 +408,19 @@ print('QDA Test Score: ',qda.score(X_test_std,y_test))
     Training accuracy
     ------------------
     LDA Train Score:  0.85346215781
-    QDA Train Score:  0.837359098229
+    QDA Train Score:  0.816425120773
     
     
     Test accuracy
     ------------------
     LDA Test Score:  0.796296296296
-    QDA Test Score:  0.70987654321
+    QDA Test Score:  0.716049382716
 
 
 
 
 ```python
+# store the accuracy score
 lda_score = score(lda, X_train_std, y_train, X_test_std, y_test)
 qda_score = score(qda, X_train_std, y_train, X_test_std, y_test)
 ```
@@ -280,6 +450,7 @@ print("Optimal number of neighbours: ", max_k)
 print('KNN Train Score: ', knn.score(X_train,y_train))
 print('KNN Test Score: ', knn.score(X_test,y_test))
 
+# Store the accuracy score
 knn_score = score(knn, X_train, y_train, X_test, y_test)
 ```
 
@@ -326,7 +497,7 @@ print('Decision Tree Test Score: ', dt_best.score(X_test,y_test))
 
 
     Decision Tree Train Score:  0.818035426731
-    Decision Tree Test Score:  0.753086419753
+    Decision Tree Test Score:  0.746913580247
 
 
 ## Random Forest
@@ -357,11 +528,11 @@ rf_score = score(rf, X_train, y_train, X_test, y_test)
 ```
 
 
-    Optimal number of trees 32, tree depth: 6
+    Optimal number of trees 32, tree depth: 10
     
     
-    Random Forest Train Score:  0.9307568438
-    Random Forest Test Score:  0.820987654321
+    Random Forest Train Score:  0.987117552335
+    Random Forest Test Score:  0.796296296296
 
 
 ## AdaBoost
@@ -393,11 +564,11 @@ ab_score = score(ab, X_train, y_train, X_test, y_test)
 ```
 
 
-    Optimal number of trees 32, learning rate: 1
+    Optimal number of trees 16, learning rate: 0.1
     
     
-    AdaBoost Train Score:  0.971014492754
-    AdaBoost Test Score:  0.722222222222
+    AdaBoost Train Score:  0.864734299517
+    AdaBoost Test Score:  0.753086419753
 
 
 ## Performance Summary
@@ -459,7 +630,7 @@ score_df
   <tbody>
     <tr>
       <th>Train accuracy</th>
-      <td>0.971014</td>
+      <td>0.864734</td>
       <td>0.818035</td>
       <td>0.566828</td>
       <td>0.853462</td>
@@ -467,23 +638,23 @@ score_df
       <td>0.618357</td>
       <td>0.840580</td>
       <td>0.618357</td>
-      <td>0.837359</td>
-      <td>0.930757</td>
+      <td>0.816425</td>
+      <td>0.987118</td>
       <td>0.618357</td>
       <td>0.484702</td>
     </tr>
     <tr>
       <th>Test accuracy</th>
-      <td>0.722222</td>
       <td>0.753086</td>
+      <td>0.746914</td>
       <td>0.592593</td>
       <td>0.796296</td>
       <td>0.783951</td>
       <td>0.592593</td>
       <td>0.746914</td>
       <td>0.592593</td>
-      <td>0.709877</td>
-      <td>0.820988</td>
+      <td>0.716049</td>
+      <td>0.796296</td>
       <td>0.592593</td>
       <td>0.425926</td>
     </tr>
@@ -497,14 +668,14 @@ score_df
       <td>0.000000</td>
       <td>0.642857</td>
       <td>0.000000</td>
-      <td>0.833333</td>
-      <td>0.619048</td>
+      <td>0.690476</td>
+      <td>0.571429</td>
       <td>0.000000</td>
       <td>0.833333</td>
     </tr>
     <tr>
       <th>Test accuracy CI</th>
-      <td>0.870968</td>
+      <td>0.913978</td>
       <td>0.838710</td>
       <td>0.989247</td>
       <td>0.849462</td>
@@ -512,23 +683,23 @@ score_df
       <td>0.924731</td>
       <td>0.763441</td>
       <td>0.924731</td>
-      <td>0.623656</td>
-      <td>0.924731</td>
+      <td>0.709677</td>
+      <td>0.870968</td>
       <td>0.924731</td>
       <td>0.172043</td>
     </tr>
     <tr>
       <th>Test accuracy AD</th>
-      <td>0.740741</td>
-      <td>0.888889</td>
+      <td>0.777778</td>
+      <td>0.851852</td>
       <td>0.111111</td>
       <td>0.888889</td>
       <td>0.851852</td>
       <td>0.370370</td>
       <td>0.851852</td>
       <td>0.370370</td>
-      <td>0.814815</td>
       <td>0.777778</td>
+      <td>0.888889</td>
       <td>0.370370</td>
       <td>0.666667</td>
     </tr>
@@ -538,12 +709,12 @@ score_df
 
 
 
-Based on the above summary, AdaBoost has a very high train accuracy which is close to 1(0.971014). Random Forest Classifier ranks second on the train accuracy(0.930757) and it also has the highest accuracy(0.820988) on the test set. LDA has the second highest accuracy(0.796296) and logistic regression with l1 regularization is the third highest(0.783951).
+Based on the above summary, Random Forest Classifier has a very high train accuracy which is close to 1(0.987118), and it also has the highest accuracy(0.796296) on the test set. AdaBoost Classifier ranks second on the train accuracy(0.864734). LDA and Random Forest Classifier have the highest test accuracy(0.796296), and logistic regression with l1 regularization is the third highest(0.783951).
 
-For classifying `CN` patients, both QDA and weighted logistic regression have the highest test accuracy(0.833333), so they performed the best for determining Cognitive Normal patients. However, logistic regression with l2 regularization and unweighted logistic regression have zero accuracy on classifying `CN` patients. Since both of them have very high accuracy on `CI` but low accuracy on `AD`, we think these two models probably classified all the `CN` patients into `AD` which leads to zero accuracy on `CN` and low accuracy on `AD`.
+For classifying `CN` patients, weighted logistic regression has the highest test accuracy(0.833333), so it performed the best for determining Cognitively Normal patients. However, logistic regression with l2 regularization, OvR logistic regression and unweighted logistic regression have zero accuracy on classifying `CN` patients. Since all of them have very high accuracy on `CI` but low accuracy on `AD`, we think these three models probably classified all the `CN` patients into `AD` which leads to zero accuracy on `CN` and low accuracy on `AD`.
 
-KNN has the highest test accuracy(0.989247) on diagnosing `CI` patients. Logistic regression with l2 regularization, OvR logistic regression and random forest all reached 0.9 accuracy on diagnosing `CI` patients.
+KNN has the highest test accuracy(0.989247) on diagnosing `CI` cognitive impairment patients. AdaBoost Classifier, logistic regression with l2 regularization, OvR logistic regression and unweighted logistic regression all reached 0.9 accuracy on diagnosing `CI` patients.
 
-Since we focus on the diagnosis of Alzheimer's disease, we are more concerned about the test accuracy on `AD` patients. Both Decision Tree and LDA have the highest test accuracy(0.888889) on `AD` patients. Logistic regression with l1 regularization and multinomial logistic regression both reached test accuracy of over 0.85 on the classification of `AD`.
+Since we focus on the diagnosis of Alzheimer's disease, we are more concerned about the test accuracy on `AD` patients. LDA and Random Forest Classifier have the highest test accuracy(0.888889) on `AD` patients. Logistic regression with l1 regularization, decision tree and multinomial logistic regression all reached test accuracy of over 0.85 on the classification of `AD`.
 
-To conclude, Decision Tree and LDA performed the best if we only concern about diagnosing `AD` patients. However, Random Forest has the best performance overall. 
+To conclude, Random Forest Classifier and LDA performed the best if we are only concerned about diagnosing `AD` patients. However, Random Forest has the best performance overall. 
