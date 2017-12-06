@@ -11,14 +11,10 @@ of patient care for Alzheimer’s and other types of dementia was $236 billion i
 brain imagings such as PET and MRI in the process of Alzheimer’s Disease (AD) diagnosis is very expensive.
 So we want to determine the effectiveness of different testing methods so that AD patients can be relatively
 accurately diagnosed with as few number of tests as possible. In other words, for this project, we aim to
-determine the performance of different testing methods for AD, and find out the most significant groups of
-predictors in predicting the diagnosis for patients.
+determine the performance of different testing methods for AD.
 
-Furthermore, we would like to take one step further and investigate whether certain AD testing method is more
-accurate for a certain group of patient (e.g. White male older than 75) in diagnosing AD. To do that, we will
-conduct statistically testings between groups of patients with shared characteristics on the performance of
-different testing methods. If some patterns are found, doctors can be even more efficient in diagnosing patients
-of various background.
+Furthermore, we would like to take one step further and find out the most significant groups of
+predictors in predicting the diagnosis for patients. To do that, we will first perform bootstrap and find out the most significant predictors by computing confidence interval. We will also perform forward and backward selection to find out the most significant predictors. Then we will compare the results of those methods to see if any common predictors are existed and rank them by significance. If some patterns are found, insignificant testing methods in the diagnose process can be eliminated and thus diagnosing can be more efficient for both patients and doctors.
 
 So the objective of this project is to build a data-driven model for Alzheimer’s Disease using patient
 demographic information, medical records, brain imaging data and other related data to predict the diagnosis of
